@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= foundedStudent.name%> 的頁面</title>
+  </head>
+  <body>
+    <h1><%= foundedStudent.name %></h1>
+    <table>
+      <tr>
+        <td>學生ID</td>
+        <td><%= foundedStudent._id %></td>
+      </tr>
+      <tr>
+        <td>名稱</td>
+        <td><%= foundedStudent.name %></td>
+      </tr>
+      <tr>
+        <td>年齡</td>
+        <td><%= foundedStudent.age %></td>
+      </tr>
+      <tr>
+        <td>merit獎學金</td>
+        <td><%= foundedStudent.scholarship.merit %></td>
+      </tr>
+      <tr>
+        <td>other獎學金</td>
+        <td><%= foundedStudent.scholarship.other %></td>
+      </tr>
+    </table>
+    <a href="/students">回到首頁</a>
+    <a href="/students/<%= foundedStudent._id %>/edit">更新學生資料</a>
+  </body>
+</html>

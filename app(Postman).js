@@ -2,12 +2,10 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Student = require("./models/student");
-const methodOverride = require("method-override");
 
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride("_method"));
 
 main().catch((err) => console.log(err));
 async function main() {
@@ -18,15 +16,10 @@ async function main() {
 app.get("/students", async (req, res) => {
   try {
     const studentData = await Student.find().exec();
-    // return res.send(studentData);
-    return res.render("students", { studentData });
+    return res.send(studentData);
   } catch (e) {
     return res.status(500).send("尋找資料時發生錯誤");
   }
-});
-
-app.get("/students/new", (req, res) => {
-  return res.render("new-student-form");
 });
 
 app.get("/students/:_id", async (req, res) => {
@@ -35,58 +28,32 @@ app.get("/students/:_id", async (req, res) => {
     const foundedStudent = await Student.findOne({
       _id,
     }).exec();
-    if (foundedStudent !== null) {
-      return res.render("students-page", { foundedStudent });
-    } else {
-      res.status(400).render("error");
-    }
-    // return res.send(foundedStudent);
+    return res.send(foundedStudent);
   } catch (error) {
-    // return res.status(500).send("尋找資料時發生錯誤");
-    return res.status(400).render("error");
-  }
-});
-
-app.get("/students/:_id/edit", async (req, res) => {
-  const { _id } = req.params;
-  try {
-    const foundedStudent = await Student.findOne({
-      _id,
-    }).exec();
-    if (foundedStudent !== null) {
-      return res.render("edit-student", { foundedStudent });
-    } else {
-      res.status(400).render("error");
-    }
-    // return res.send(foundedStudent);
-  } catch (error) {
-    // return res.status(500).send("尋找資料時發生錯誤");
-    return res.status(400).render("error");
+    return res.status(500).send("尋找資料時發生錯誤");
   }
 });
 
 app.post("/students", async (req, res) => {
   try {
-    const { name, age, merit, other } = req.body;
+    const { name, age, major, merit, other } = req.body;
     const newStudent = new Student({
       name,
       age,
+      major,
       scholarship: { merit, other },
     });
     const savedStudent = await newStudent.save();
-    // return res.send({
-    //   msg: "資料儲存成功",
-    //   savedObject: savedStudent,
-    // });
-    return res.render("student-save-success", { savedStudent });
+    return res.send({
+      msg: "資料儲存成功",
+      savedObject: savedStudent,
+    });
   } catch (error) {
-    // return res.status(400).send(error);
-    return res.status(400).render("student-save-fail");
+    return res.status(400).send(error);
   }
 });
 
 app.put("/students/:_id", async (req, res) => {
-  // return res.send("正在接收POST req...");
   try {
     const { _id } = req.params;
     const { name, age, major, merit, other } = req.body;
@@ -102,8 +69,7 @@ app.put("/students/:_id", async (req, res) => {
       }
     );
 
-    // return res.send({ msg: "成功更新資料", updatedData: newData });
-    return res.render("student-update-success", { newData });
+    return res.send({ msg: "成功更新資料", updatedData: newData });
   } catch (error) {
     return res.status(400).send(error.message);
   }
